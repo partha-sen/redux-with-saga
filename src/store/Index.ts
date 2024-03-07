@@ -4,6 +4,11 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from "./user/User.slice"
 import { persistStore } from 'redux-persist';
+import createSagaMiddleware from 'redux-saga';
+import mySaga from '../sagas/MySaga';
+
+
+const sagaMiddleware = createSagaMiddleware({});
 
 export const rootReducer = combineReducers({
     users: userReducer
@@ -15,11 +20,15 @@ const persistConfig = {
   };
 
 
-  const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-    reducer: persistedReducer
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) => 
+    getDefaultMiddleware().concat(sagaMiddleware)
 })
+
+sagaMiddleware.run(mySaga);
 
 export type RootState = ReturnType<typeof store.getState>;
 export const persistor = persistStore(store);

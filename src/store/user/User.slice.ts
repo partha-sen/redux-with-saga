@@ -9,12 +9,18 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         addUser:(state, action: PayloadAction<IUser>) => {
-            console.log(action.payload)
+            console.log("Add user called")
+        },
+        addUserSuccess:(state, action: PayloadAction<IUser>) => {
             state.push(action.payload);
-        }
+        },
+        clearAll:(state) => {
+            console.log("Clear All")
+            state.splice(0, state.length);
+        },
     }
 })
 
-export const { addUser } = userSlice.actions;
+export const {addUser, addUserSuccess, clearAll} = userSlice.actions;
 export const slectUsers = (state: RootState) => state.users
 export default userSlice.reducer;
