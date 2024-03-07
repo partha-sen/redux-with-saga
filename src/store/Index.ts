@@ -1,9 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
-import { persistReducer } from 'redux-persist';
+import { FLUSH,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER,
+    REHYDRATE,
+    persistReducer, 
+    persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from "./user/User.slice"
-import { persistStore } from 'redux-persist';
 import createSagaMiddleware from 'redux-saga';
 import mySaga from '../sagas/MySaga';
 
@@ -25,7 +31,11 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) => 
-    getDefaultMiddleware().concat(sagaMiddleware)
+    getDefaultMiddleware({
+        serializableCheck:{
+            ignoredActions: [FLUSH,REHYDRATE, PAUSE, PERSIST, PAUSE, REGISTER]
+        }
+    }).concat(sagaMiddleware)
 })
 
 sagaMiddleware.run(mySaga);
